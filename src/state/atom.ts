@@ -17,6 +17,6 @@ export const listaDeEventosState = atom<IEvento[]>({
       fim: new Date("2022-05-07T11:00"),
       completo: false,
       id: 1642342959,
-    },
+    }
   ],
 });
