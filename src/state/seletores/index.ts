@@ -1,3 +1,4 @@
+import { Status } from './../../interfaces/IFiltroDeEventos';
 import { filtroDeEventos, listaDeEventosState } from "./../atom";
 import { selector } from "recoil";
 
@@ -7,13 +8,20 @@ export const eventosFiltradosState = selector({
     const filtro = get(filtroDeEventos);
     const todosOsEventos = get(listaDeEventosState);
     const eventos = todosOsEventos.filter((evento) => {
-      if (!filtro.data) {
-        return true;
+      let filtroData = true;
+      let filtroStatus = true;
+      if (filtro.data) {
+        filtroData =
+          filtro.data.toISOString().slice(0, 10) ===
+          evento.inicio.toISOString().slice(0, 10);
       }
-      const ehOMesmoDia =
-        filtro.data.toISOString().slice(0, 10) ===
-        evento.inicio.toISOString().slice(0, 10);
-      return ehOMesmoDia;
+      if (filtro.status === Status.Completos) {
+        filtroStatus = evento.completo;
+      } else if (filtro.status === Status.Incompletos) {
+        filtroStatus = !evento.completo;
+      }
+
+      return filtroData && filtroStatus;
     });
     return eventos;
   },

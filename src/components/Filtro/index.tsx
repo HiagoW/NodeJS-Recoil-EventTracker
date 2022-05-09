@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { IFiltroDeEventos } from '../../interfaces/IFiltroDeEventos';
+import { IFiltroDeEventos, Status } from '../../interfaces/IFiltroDeEventos';
 import { filtroDeEventos } from '../../state/atom';
 import style from './Filtro.module.scss';
 
 const Filtro: React.FC = () => {
   
   const [data, setData] = useState('')
+  const [status, setStatus] = useState<Status>(Status.Ambos)
+
   const setFiltroDeEvento = useSetRecoilState<IFiltroDeEventos>(filtroDeEventos)
 
   const submeterForm = (evento: React.FormEvent<HTMLFormElement>) => {
     evento.preventDefault()
-    const filtro: IFiltroDeEventos = {}
+    const filtro: IFiltroDeEventos = {status}
     if (data) {
       filtro.data = new Date(data)
     } else {
@@ -30,6 +32,11 @@ const Filtro: React.FC = () => {
       onChange={evento => setData(evento.target.value)} 
       placeholder="Por data"
       value={data} />
+    <select className={style.input} value={status} onChange={(event) => setStatus(event.target.value as Status)} >
+      <option value={Status.Ambos}>Ambos</option>
+      <option value={Status.Completos}>Completos</option>
+      <option value={Status.Incompletos}>Incompletos</option>
+    </select>
 
     <button className={style.botao}>
       Filtrar
